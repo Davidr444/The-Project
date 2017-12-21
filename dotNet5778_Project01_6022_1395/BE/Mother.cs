@@ -8,31 +8,47 @@ namespace BE
 {
     public class Mother 
     {
-        public int ID
+        #region Fields
+        readonly int id;
+        #endregion
+
+        #region Constructors:
+        public Mother(int iD, string lastName, string firstName, int phone, string adress, string desiredAddressOfNanny, bool[] daysOfNeedingNanny, DateTime[,] hoursOfNeedingNanny, string recommendations)
         {
-            get { return ID; }
-            set
+            #region id = iD (with validation)
+            string num = Convert.ToString(iD);
+            num.Trim();//Erases all spaces entered in front or back
+            if (num.Length != 9)////Check whether the ID entered is exactly 9 digits:
+                throw new FormatException("The ID entered is less than 9 digits long.");
+
+            //Validation of ID (According to the algorithm of the integrity of an Israeli ID)
+            char[] propriety = { '1', '2', '1', '2', '1', '2', '1', '2', '1' };
+            int validation = 0;
+
+            for (int i = 0; i < 9; ++i)
             {
-                string num = Convert.ToString(value);
-                num.Trim();//Erases all spaces entered in front or back
-                if (num.Length != 9)////Check whether the ID entered is exactly 9 digits:
-                    throw new FormatException("The ID entered is less than 9 digits long.");
-
-                //Validation of ID (According to the algorithm of the integrity of an Israeli ID)
-                char[] propriety = { '1', '2', '1', '2', '1', '2', '1', '2', '1' };
-                int validation = 0;
-
-                for (int i = 0; i < 9; ++i)
-                {
-                    validation += ((int)num[i] * (int)propriety[i]);
-                }
-
-                if (validation % 10 != 0)
-                    throw new ArgumentException("The ID that was entered illegally in Israel");
-
-                ID = value;
+                validation += ((int)num[i] * (int)propriety[i]);
             }
+
+            if (validation % 10 != 0)
+                throw new ArgumentException("The ID that was entered illegally in Israel");
+
+            id = iD;
+            #endregion
+
+            LastName = lastName;
+            FirstName = firstName;
+            Phone = phone;
+            Adress = adress;
+            DesiredAddressOfNanny = desiredAddressOfNanny;
+            DaysOfNeedingNanny = daysOfNeedingNanny;
+            HoursOfNeedingNanny = hoursOfNeedingNanny;
+            Recommendations = recommendations;
         }
+        #endregion
+
+        #region Properties:
+        public int ID{get { return id; }}
         public string LastName { get { return LastName; } set { LastName = value; } }
         public string FirstName { get { return FirstName; } set { FirstName = value; } }
         public int Phone { get { return Phone; } set { Phone = value; } }
@@ -99,11 +115,14 @@ namespace BE
             }
         }
         public string Recommendations { get { return Recommendations; } set { Recommendations = value; } }
+        #endregion
 
+        #region Methods:
         public override string ToString()
         {
             return "I am the mother: " + FirstName + ' ' + LastName + ", ID: " + ID;
         }
+        #endregion
         //מאפיינים נוספים לפי הצורך
     }
 }
