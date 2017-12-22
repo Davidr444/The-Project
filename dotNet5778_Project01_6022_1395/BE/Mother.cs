@@ -37,12 +37,58 @@ namespace BE
             #endregion
 
             LastName = lastName;
+
             FirstName = firstName;
+
             Phone = phone;
+
+            #region Adress = adress (with validation)
+            int counter = 0, helpChar = adress.IndexOf(',', 2);
+
+            if (helpChar == -1)
+                throw new FormatException("The string is not in the format: Street, City, State");
+
+            for (; helpChar != -1; counter++)
+            {
+                helpChar = adress.IndexOf(',', helpChar + 1);
+            }
+
+            if (counter != 3)
+                throw new FormatException("The string is not in the format: Street, City, State");
+
             Adress = adress;
+            #endregion
+
+            #region DesiredAddressOfNanny = desiredAddressOfNanny (with validation)
+            counter = 0;
+            helpChar = desiredAddressOfNanny.IndexOf(',', 2);
+
+            if (helpChar == -1)
+                throw new FormatException("The string is not in the format: Street, City, State");
+
+            for (; helpChar != -1; counter++)
+            {
+                helpChar = desiredAddressOfNanny.IndexOf(',', helpChar + 1);
+            }
+
+            if (counter != 3)
+                throw new FormatException("The string is not in the format: Street, City, State");
+
             DesiredAddressOfNanny = desiredAddressOfNanny;
+            #endregion
+
+            #region DaysOfNeedingNanny = daysOfNeedingNanny (with validation)
+            if (daysOfNeedingNanny.Length != 7)
+                throw new ArgumentException("The array is not the right size (7)");
             DaysOfNeedingNanny = daysOfNeedingNanny;
+            #endregion
+
+            #region HoursOfNeedingNanny = hoursOfNeedingNanny (with validation)
+            if (hoursOfNeedingNanny.GetLength(0) != 6 || hoursOfNeedingNanny.GetLength(2) != 2)
+                throw new ArgumentException("The array is not of the appropriate size (6,2)");
             HoursOfNeedingNanny = hoursOfNeedingNanny;
+            #endregion
+
             Recommendations = recommendations;
         }
         #endregion
@@ -124,5 +170,6 @@ namespace BE
         }
         #endregion
         //מאפיינים נוספים לפי הצורך
+        //בדיקת שם תקין
     }
 }

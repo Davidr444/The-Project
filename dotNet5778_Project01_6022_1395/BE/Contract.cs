@@ -8,20 +8,121 @@ namespace BE
 {
    public class Contract
     {
-        public int Num { get { return Num; } set { } }
-        public int NannyID { get { return NannyID; } set { } }
-        public int ChildID { get { return NannyID; } set { } }
-        public bool IntroductoryMeeting { get { return IntroductoryMeeting; }  set { } }
-        public bool ContractSigned { get { return ContractSigned; } set { } }
-        public int HourlyWages { get { return HourlyWages; } set { } }
-        public int MonthlySalary { get { return MonthlySalary; } set { } }
-        public string HourOrMonth { get { return HourOrMonth; } set { /*לעשות שאפשרי להכניס רק הוור או מנס*/ } }
-        public DateTime DateOfStartContract { get { return DateOfStartContract; } set { } }
-        public DateTime DateOfEndContract { get { return DateOfEndContract; } set { } }
+        #region Fields
+        readonly int nanny_id;
+        readonly int child_id;
+        #endregion
+
+        #region Constructors:
+        public Contract(int num, int nannyID, int childID, bool introductoryMeeting, bool contractSigned, int hourlySalary, int monthlySalary, SalaryBy hourOrMonth, DateTime dateOfStartContract, DateTime dateOfEndContract)
+        {
+            Num = num;//להוסיף בדיקה
+
+            #region nanny_id = nannyID (with validation)
+            //Validation of the ID:
+            string id = Convert.ToString(nannyID);
+            id.Trim();//Erases all spaces entered in front or back
+            if (id.Length != 9)////Check whether the ID entered is exactly 9 digits:
+                throw new FormatException("The ID entered is less than 9 digits long.");
+
+            //Validation of ID (According to the algorithm of the integrity of an Israeli ID)
+            char[] propriety = { '1', '2', '1', '2', '1', '2', '1', '2', '1' };
+            int validation = 0;
+
+            for (int i = 0; i < 9; ++i)
+            {
+                validation += ((int)id[i] * (int)propriety[i]);
+            }
+
+            if (validation % 10 != 0)
+                throw new ArgumentException("The ID that was entered illegally in Israel");
+            nanny_id = nannyID;
+            #endregion
+
+            #region child_id = childID (with validation)
+            //Validation of the ID:
+            id = Convert.ToString(childID);
+            id.Trim();//Erases all spaces entered in front or back
+            if (id.Length != 9)////Check whether the ID entered is exactly 9 digits:
+                throw new FormatException("The ID entered is less than 9 digits long.");
+
+            //Validation of ID (According to the algorithm of the integrity of an Israeli ID)
+            validation = 0;
+
+            for (int i = 0; i < 9; ++i)
+            {
+                validation += ((int)id[i] * (int)propriety[i]);
+            }
+
+            if (validation % 10 != 0)
+                throw new ArgumentException("The ID that was entered illegally in Israel");
+
+            child_id = childID;
+            #endregion
+
+            IntroductoryMeeting = introductoryMeeting;
+
+            ContractSigned = contractSigned;
+
+            HourlySalary = hourlySalary;
+
+            MonthlySalary = monthlySalary;
+
+            HourOrMonth = hourOrMonth;
+
+            #region DateOfStartContract = dateOfStartContract (with validation)
+            if (dateOfStartContract.CompareTo(DateTime.Now) == 1)
+                throw new ArgumentException("The entered date of birth is in the future");
+            DateOfStartContract = dateOfStartContract;
+            #endregion
+
+            #region DateOfEndContract = dateOfEndContract (with validation)
+            if (dateOfEndContract.CompareTo(DateOfStartContract) == -1)
+                throw new ArgumentException("The contract end date entered earlier than the contract start date");
+            DateOfEndContract = dateOfEndContract;
+            #endregion
+        }
+        #endregion
+
+        #region Properties:
+        public int Num { get { return Num; } set { } }//לטפל
+        public int NannyID { get { return nanny_id; } }
+        public int ChildID { get { return child_id; } }
+        public bool IntroductoryMeeting { get { return IntroductoryMeeting; }  set { IntroductoryMeeting = value; } }
+        public bool ContractSigned { get { return ContractSigned; } set { ContractSigned = value; } }
+        public int HourlySalary { get { return HourlySalary; } set { HourlySalary = value; } }
+        public int MonthlySalary { get { return MonthlySalary; } set { MonthlySalary = value; } }
+        public SalaryBy HourOrMonth { get { return HourOrMonth; } set { HourOrMonth = value;  } }
+        public DateTime DateOfStartContract
+        {
+            get { return DateOfStartContract; }
+            set
+            {
+                if (value.CompareTo(DateTime.Now) == 1)
+                        throw new ArgumentException("The entered date of birth is in the future");
+                DateOfStartContract = value;
+            }
+        }
+        public DateTime DateOfEndContract
+        {
+            get{ return DateOfEndContract; }
+            set
+            {
+                if (value.CompareTo(DateOfStartContract) == -1)
+                    throw new ArgumentException("The contract end date entered earlier than the contract start date");
+                DateOfEndContract = value;
+            }
+        }
+        #endregion
+
+        #region Methods:
         public override string ToString()
         {
-
+            return "I am the contract No." + Num + ", nanny ID: " + NannyID + ", child ID: " + ChildID;
         }
+        #endregion
         //מאפיינים נוספים לפי הצורך
     }
+
+    public enum SalaryBy {Hour, Month};
 }
