@@ -14,9 +14,21 @@ namespace BE
         #endregion
 
         #region Constructors:
-        public Contract(int num, int nannyID, int childID, bool introductoryMeeting, bool contractSigned, int hourlySalary, int monthlySalary, SalaryBy hourOrMonth, DateTime dateOfStartContract, DateTime dateOfEndContract)
+        public Contract(string num, int nannyID, int childID, bool introductoryMeeting, bool contractSigned, int hourlySalary, int monthlySalary, SalaryBy hourOrMonth, DateTime dateOfStartContract, DateTime dateOfEndContract)
         {
-            Num = num;//להוסיף בדיקה
+            #region Num = num (with validation)
+            num.Trim();
+
+            foreach (char c in num)
+            {
+                if (c < '0' || c > '9')
+                    throw new FormatException("Num must consist of numbers only");
+            }
+
+            if (num.Length != 8)
+                throw new FormatException("The number must be exactly 8 digits");
+            Num = num;
+            #endregion
 
             #region nanny_id = nannyID (with validation)
             //Validation of the ID:
@@ -85,7 +97,25 @@ namespace BE
         #endregion
 
         #region Properties:
-        public int Num { get { return Num; } set { } }//לטפל
+        public string Num
+        {
+            get { return Num; }
+            set
+            {
+                value.Trim();
+
+                foreach (char c in value)
+                {
+                    if (c < '0' || c > '9')
+                        throw new FormatException("Num must consist of numbers only");
+                }
+
+                if (value.Length != 8)
+                    throw new FormatException("The number must be exactly 8 digits");
+
+                Num = value;
+            }
+        }
         public int NannyID { get { return nanny_id; } }
         public int ChildID { get { return child_id; } }
         public bool IntroductoryMeeting { get { return IntroductoryMeeting; }  set { IntroductoryMeeting = value; } }
